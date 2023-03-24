@@ -1,0 +1,28 @@
+version: '3.1'
+services:
+  db:
+    container_name: api-db
+    image: mongo:4.4.19
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: api
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 296cd9f
+  
+  api:
+    container_name: api
+    restart: always
+    build: .
+    environment:
+      PYTHONUNBUFFERED: 1
+      DB_URI: mongodb://admin:296cd9f@api-db/api?authSource=admin
+      DB_NAME: api
+      FLASK_DEBUG: "false"
+      FLASK_APP: app
+      FLASK_ENV: development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
