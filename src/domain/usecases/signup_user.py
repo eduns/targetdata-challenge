@@ -1,15 +1,14 @@
-from werkzeug.security import generate_password_hash
-
 from ..repositories.user import UserRepository
 
 class SignupUser():
     def __init__(self, repository: UserRepository) -> None:
         self.repository = repository
 
-    def execute(self, user_dto: dict) -> None:
-        user = {
-            'username': user_dto.get('username'),
-            'password_hash': generate_password_hash(user_dto.get('password'), method='sha256')
-        }
+    def execute(self, signup_dto: dict) -> None:
+        username = signup_dto.get('username')
+        password = signup_dto.get('password')
 
-        self.repository.add(user)
+        self.repository.add({
+            'username': username,
+            'password': password
+        })
