@@ -1,23 +1,18 @@
-import unittest
-
-from src.domain.repositories.user import InMemoryUserRepository
 from src.domain.usecases.signup_user import SignupUser
 
+from tests.mocks.repositories.user import InMemoryUserRepository
+
 repository = InMemoryUserRepository()
-signup_usecase = SignupUser(repository)
+usecase = SignupUser(repository)
 
-class TestSignupUserUseCase(unittest.TestCase):
-    def test_signup_user(self):
-        payload = {
-            'username': 'foo',
-            'password': 'bar'
-        }
+def test_signup_user():
+    payload = {
+        'username': 'foo2',
+        'password': 'bar2'
+    }
 
-        signup_usecase.execute(payload)
+    usecase.execute(payload)
 
-        user = repository.get(payload)
+    user = repository.get(payload)
 
-        self.assertIsNotNone(user)
-    
-if __name__ == '__main__':
-    unittest.main()
+    assert user is not None
