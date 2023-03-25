@@ -172,9 +172,6 @@ def get_forecast():
                             type: array
                             items:
                                 $ref: '#/definitions/ForecastData'
-                                    
-        example:
-          status: 'okdsd'
     """
     result = get_locale_forecast_controller.handle(request.json)
 
@@ -208,8 +205,6 @@ def get_logs():
                             type: object
                         request_body:
                             type: object
-        example:
-          status: 'okdsd'
     """
     logs = get_user_logs(request.headers.get('authorization'))
 
