@@ -1,0 +1,57 @@
+version: '3.1'
+services:
+  db:
+    container_name: api-db
+    image: mongo:4.4.19
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: api
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 296cd9f
+    networks:
+      - elastic
+  api:
+    container_name: api
+    restart: always
+    build: .
+    environment:
+      PYTHONUNBUFFERED: 1
+      DB_URI: mongodb://admin:296cd9f@api-db/api?authSource=admin
+      DB_NAME: api
+      FLASK_DEBUG: true
+      FLASK_APP: app
+      FLASK_ENV: development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - elasticsearch
+    networks:
+      - elastic
+  elasticsearch:
+    container_name: api-logs
+    image: elasticsearch:8.6.2
+    restart: always
+    environment:
+      discovery.type: "single-node"
+      xpack.security.enabled: false
+      network.host: 0.0.0.0
+      use_ssl: false
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+      ELASTIC_PASSWORD: "elastic"
+    ports:
+      - "9200:9200"
+    expose:
+      - "9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+volumes:
+  es_data:
+    driver: local
+networks:
+  elastic:
+    driver: bridge
